@@ -1,0 +1,48 @@
+﻿name: Build iOS IPA
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Unsigned IPA
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: |
+          sudo xcode-select -s /Applications/Xcode_15.4.app || true
+          xcodebuild -version
+
+      - name: Build Xcode Project (Unsigned for Sideloadly)
+        run: |
+          xcodebuild clean build \
+            -project qlulibrary.xcodeproj \
+            -scheme qlulibrary \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO
+
+      - name: Package IPA Archive
+        run: |
+          mkdir -p Payload
+          cp -r build/Build/Products/Release-iphoneos/qlulibrary.app Payload/
+          zip -r qlulibrary.ipa Payload
+          ls -lh qlulibrary.ipa
+
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: qlulibrary-unsigned-ipa
+          path: qlulibrary.ipa
+          retention-days: 30
