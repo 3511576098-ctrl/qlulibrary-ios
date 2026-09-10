@@ -37,14 +37,18 @@ class ViewController: UIViewController, WKUIDelegate, WKNavigationDelegate {
         webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         webView.uiDelegate = self
         webView.navigationDelegate = self
-        webView.isOpaque = false
+        webView.isOpaque = true
         webView.backgroundColor = .white
         webView.scrollView.backgroundColor = .white
+        if #available(iOS 15.0, *) {
+            webView.underPageBackgroundColor = .white
+        }
         webView.scrollView.contentInsetAdjustmentBehavior = .always
 
-        // 下拉刷新
+        // 下拉刷新 (Apple 经典浅蓝小菊花，纯白背景)
         refreshControl = UIRefreshControl()
-        refreshControl.tintColor = UIColor(red: 56/255.0, green: 189/255.0, blue: 248/255.0, alpha: 1.0)
+        refreshControl.backgroundColor = .white
+        refreshControl.tintColor = UIColor(red: 37/255.0, green: 99/255.0, blue: 235/255.0, alpha: 1.0)
         refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         webView.scrollView.refreshControl = refreshControl
 
