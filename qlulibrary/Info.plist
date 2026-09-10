@@ -51,7 +51,7 @@
         </dict>
     </dict>
     <key>UIStatusBarStyle</key>
-    <string>UIStatusBarStyleLightContent</string>
+    <string>UIStatusBarStyleDarkContent</string>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <true/>
     <key>UISupportedInterfaceOrientations</key>

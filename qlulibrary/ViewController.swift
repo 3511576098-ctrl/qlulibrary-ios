@@ -1,4 +1,4 @@
-﻿import UIKit
+import UIKit
 import WebKit
 
 class ViewController: UIViewController, WKUIDelegate, WKNavigationDelegate {
@@ -17,11 +17,11 @@ class ViewController: UIViewController, WKUIDelegate, WKNavigationDelegate {
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
+        return .darkContent
     }
 
     private func setupUI() {
-        view.backgroundColor = UIColor(red: 15/255.0, green: 23/255.0, blue: 42/255.0, alpha: 1.0)
+        view.backgroundColor = .white
     }
 
     private func setupWebView() {
@@ -38,8 +38,8 @@ class ViewController: UIViewController, WKUIDelegate, WKNavigationDelegate {
         webView.uiDelegate = self
         webView.navigationDelegate = self
         webView.isOpaque = false
-        webView.backgroundColor = UIColor(red: 15/255.0, green: 23/255.0, blue: 42/255.0, alpha: 1.0)
-        webView.scrollView.backgroundColor = UIColor(red: 15/255.0, green: 23/255.0, blue: 42/255.0, alpha: 1.0)
+        webView.backgroundColor = .white
+        webView.scrollView.backgroundColor = .white
         webView.scrollView.contentInsetAdjustmentBehavior = .always
 
         // 下拉刷新
