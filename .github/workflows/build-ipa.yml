@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    name: Build Signed Ad-hoc IPA
+    name: Build Ad-hoc Signed IPA
     runs-on: macos-14
 
     steps:
@@ -21,7 +21,7 @@ jobs:
           sudo xcode-select -s /Applications/Xcode_15.4.app || true
           xcodebuild -version
 
-      - name: Build Xcode Project
+      - name: Build Xcode Project Unsigned
         run: |
           xcodebuild clean build \
             -project qlulibrary.xcodeproj \
@@ -29,20 +29,20 @@ jobs:
             -configuration Release \
             -sdk iphoneos \
             -derivedDataPath build \
-            CODE_SIGNING_ALLOWED=YES \
+            CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGN_IDENTITY="-"
+            CODE_SIGN_IDENTITY=""
 
-      - name: Ensure Ad-hoc Code Signature and Package IPA
+      - name: Apply Native Ad-hoc Signature and Package IPA
         run: |
           APP_PATH="build/Build/Products/Release-iphoneos/qlulibrary.app"
           
-          # Explicitly sign ad-hoc to produce valid _CodeSignature/CodeResources
+          # Native codesign ad-hoc
           codesign --force --deep --sign - "$APP_PATH"
           codesign -dvvv "$APP_PATH"
 
           mkdir -p Payload
-          cp -r "$APP_PATH" Payload/
+          cp -R "$APP_PATH" Payload/
           zip -r -y qlulibrary.ipa Payload
           ls -lh qlulibrary.ipa
 
