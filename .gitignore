@@ -1,4 +1,4 @@
-﻿# Xcode
+# Xcode
 build/
 DerivedData/
 *.pbxuser
@@ -17,5 +17,6 @@ xcuserdata/
 
 # iOS Artifacts
 *.ipa
+*.exe
 Payload/
 .DS_Store

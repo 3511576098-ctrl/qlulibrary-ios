@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    name: Build Ad-hoc Signed IPA
+    name: Build iOS IPA
     runs-on: macos-14
 
     steps:
@@ -21,7 +21,7 @@ jobs:
           sudo xcode-select -s /Applications/Xcode_15.4.app || true
           xcodebuild -version
 
-      - name: Build Xcode Project Unsigned
+      - name: Build Xcode Project
         run: |
           xcodebuild clean build \
             -project qlulibrary.xcodeproj \
@@ -33,22 +33,28 @@ jobs:
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY=""
 
-      - name: Apply Native Ad-hoc Signature and Package IPA
+      - name: Package Standard IPA
         run: |
           APP_PATH="build/Build/Products/Release-iphoneos/qlulibrary.app"
           
-          # Native codesign ad-hoc
-          codesign --force --deep --sign - "$APP_PATH"
-          codesign -dvvv "$APP_PATH"
-
           mkdir -p Payload
           cp -R "$APP_PATH" Payload/
-          zip -r -y qlulibrary.ipa Payload
-          ls -lh qlulibrary.ipa
+          
+          # Clean any stray code signature so Sideloadly can sign cleanly
+          rm -rf Payload/qlulibrary.app/_CodeSignature
+          
+          # Fix POSIX permissions
+          chmod -R 755 Payload
+          find Payload -type f -exec chmod 644 {} +
+          chmod 755 Payload/qlulibrary.app/qlulibrary
+          
+          zip -r -y qlulibrary_v2.ipa Payload
+          ls -lh qlulibrary_v2.ipa
 
       - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: qlulibrary-signed-ipa
-          path: qlulibrary.ipa
+          name: qlulibrary-v2-ipa
+          path: qlulibrary_v2.ipa
           retention-days: 30
+
